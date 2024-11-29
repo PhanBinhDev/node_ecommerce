@@ -1,6 +1,6 @@
 const app = require('./src/app')
 
-const PORT = 3066
+const PORT = process.env.PORT || 3066
 const server = app.listen(PORT, () => {
   console.log(`Backend eCommerce is running on port ${PORT}`)
 })

@@ -1,0 +1,11 @@
+graph TD
+    A[Client] -->|API Gateway| B[Order Service]
+    A -->|API Gateway| C[Discount Service]
+    B <-->|gRPC| C
+    C <--> D[Discount Rules Engine]
+    C <--> E[Discount Database]
+    C <--> F[Cache Layer]
+    C <--> G[Event Bus]
+    G --> H[Analytics Service]
+    G --> I[Inventory Service]
+    G --> J[User Service]

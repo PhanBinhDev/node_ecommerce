@@ -1,10 +1,14 @@
 const express = require('express')
 const app = express()
 
+require('dotenv').config()
 const morgan = require('morgan')
 const { default: helmet } = require('helmet')
 const compression = require('compression')
+require('module-alias/register')
 
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 // Init middlewares
 // morgan
 app.use(morgan('dev'))
@@ -17,15 +21,26 @@ app.use(compression())
 require('./dbs/init.mongodb')
 
 const { checkOverload } = require('./helpers/check.connect')
-checkOverload()
+// checkOverload()
 // Init routes
-app.get('/', (req, res, next) => {
-  const strCompress = 'Hello BinhJs'
-  return res.status(200).json({
-    message: 'API is running',
-    metadata: strCompress.repeat(100000)
+app.use('/v1/api', require('./routes/index'))
+
+// handle errors
+app.use((req, res, next) => {
+  const error = new Error('Not Found')
+  error.status = 404
+  next(error)
+})
+
+app.use((error, req, res, next) => {
+  const statusCode = error.status || 500
+
+  return res.status(statusCode).json({
+    status: 'error',
+    code: statusCode,
+    stack: error.stack,
+    message: error.message || 'Internal Server Error'
   })
 })
-// handle errors
 
 module.exports = app

@@ -2,9 +2,11 @@
 
 const mongoose = require('mongoose')
 const { countConnect } = require('../helpers/check.connect')
+const {
+  db: { host, name, port }
+} = require('../configs/config.mongodb')
 countConnect()
-const connectString =
-  'mongodb+srv://binhphandev:jb0yKSsOrk6GUjFc@cluster0.orvki.mongodb.net/showDEV'
+const connectString = `mongodb+srv://binhphandev:jb0yKSsOrk6GUjFc@${host}/${name}`
 
 class Database {
   constructor() {
@@ -23,7 +25,7 @@ class Database {
       .then((_) =>
         console.log(`Connected  Mongodb Successfully ${countConnect()}`)
       )
-      .catch((err) => console.log(`Error Connecting`))
+      .catch((err) => console.log(`Error Connecting ${err}`))
   }
 
   static getInstance() {
